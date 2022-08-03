@@ -20,31 +20,20 @@ void print() {
     cout << "\n";
 }
 
-void dfs(int cnt) {
+void dfs(int idx, int cnt) {
     bool cor = false;
     if (cnt == m) {
-        if (m > 1) { //출력해야할 수가 2개이상일때 순서에 상관없이 중복을 제거해야한다. ex){1 2}출력 후 {2 1}은 불가능하다
-            for (int i = 0; i < m - 1; i++) { //오름차순으로 중복없이 출력을 해야하니 값들을 비교하여 tmp[i]값보다 tmp[i+1]값이 작다면 중복이다. ex){1 2} {2 1}
-                if (tmp[i] < tmp[i + 1])
-                    cor = true;
-                else {
-                    cor = false;
-                    break;
-                }
-            }
-            if (cor)
-                print();
-        }
-        else print();
+        print();
         return;
     }
 
-    for (int i = 0; i < n; i++) {
+    for (int i = idx; i < n; i++) {
         if (sel[i] == true)
             continue;
         sel[i] = true;
         tmp.push_back(v[i]);
-        dfs(cnt + 1);
+        dfs(i + 1, cnt + 1); //조합은 순열과 달리 중복이 되면 안되므로 시작점이 필요
+        // 다음 cnt로 넘어갈 때 이전에 건든 작은 값은 건들지 않아야하므로 +1씩 증가시킨다
         tmp.pop_back();
         sel[i] = false;
     }
@@ -54,5 +43,5 @@ int main() {
     cin >> n >> m;
     
     init();
-    dfs(0);
+    dfs(0, 0);
 }
