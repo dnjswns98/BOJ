@@ -25,10 +25,7 @@ ll area() {
 			height = s.top();
 			s.pop();
 
-			if (s.empty())
-				weight = i;
-			else
-				weight = i - s.top() - 1;
+			weight = i - s.top() - 1;
 
 			result = max(result, h[height] * weight);
 		}
