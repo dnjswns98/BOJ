@@ -22,7 +22,7 @@ bool search(int mid) {
 }
 
 void solve() {
-	int left = 0; //최소값
+	int left = 0; //최소값 //v[0]로 설정시 원하는 mid값이 안나올수있음 //ex v[0] = 9999, v[1] = 10000
 	int right = v[n - 1]; //최대값
 	int midMax = 0;
 	while (left <= right) {
