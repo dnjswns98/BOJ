@@ -1,23 +1,20 @@
 #include <iostream>
-#define ll long long
-
 using namespace std;
 
-ll mul(int x, int y, int div) {
-    if (y == 1)
-        return x % div;
-    else if (y % 2 == 0) {
-        ll tmp = mul(x, y / 2, div);
-        return tmp * tmp % div;
-    }
-    else return x * mul(x, y - 1, div) % div;
+#define ll long long
+
+ll mul(ll a, ll b, ll c) {
+	if (b == 1)
+		return a % c;
+	if (b % 2 == 0) {
+		ll tmp = mul(a, b / 2, c);
+		return tmp * tmp % c;
+	}
+	return a * mul(a, b - 1, c) % c;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false); cout.tie(NULL); cin.tie(NULL);
-
-    ll a, b, c;
-    cin >> a >> b >> c;
-    cout << mul(a, b, c);
-
+	ll x, y, z;
+	cin >> x >> y >> z;
+	cout << mul(x, y, z);
 }
