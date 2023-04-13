@@ -1,73 +1,75 @@
-#include<iostream>
-#include<queue>
-#include<vector>
- 
-#define endl "\n"
-#define MAX 20010
-#define INF 987654321
+#include <iostream>
+#include <queue>
+#include <vector>
 using namespace std;
- 
-int V, E, Start;
-int Dist[MAX];
-vector<pair<int, int>> Vertex[MAX];
- 
-void Input()
-{
-    cin >> V >> E >> Start;
-    for (int i = 0; i < E; i++)
-    {
-        int a, b, c; cin >> a >> b >> c;
-        Vertex[a].push_back(make_pair(b, c));
-    }
-    for (int i = 1; i <= V; i++) Dist[i] = INF;
-}
- 
-void Solution()
-{
-    priority_queue<pair<int, int>> PQ;
-    PQ.push(make_pair(0, Start));
-    Dist[Start] = 0;
- 
-    while (PQ.empty() == 0)
-    {
-        int Cost = -PQ.top().first;
-        int Cur = PQ.top().second;
-        PQ.pop();
- 
-        for (int i = 0; i < Vertex[Cur].size(); i++)
-        {
-            int Next = Vertex[Cur][i].first;
-            int nCost = Vertex[Cur][i].second;
- 
-            if (Dist[Next] > Cost + nCost)
-            {
-                Dist[Next] = Cost + nCost;
-                PQ.push(make_pair(-Dist[Next], Next));
+
+#define INF 1000000000
+vector<pair<int, int>> v[20001];
+int dist[20001];
+int n, e, start;
+
+//struct compare {
+//	bool operator()(pair<int, int>a, pair<int, int>b) {
+//		return a.second < b.second;
+//	}
+//};
+
+void dijkstra() {
+
+	dist[start] = 0;
+
+	priority_queue < pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+	pq.push({ 0, start });
+
+	while (!pq.empty()) {
+		int cost = pq.top().first;
+		int now = pq.top().second;
+
+        pq.pop();
+
+
+        if (dist[now] < cost) {
+            continue;
+        }
+
+
+        for (int i = 0; i < v[now].size(); ++i) {
+
+
+            int next_destination = v[now][i].second;
+
+            int next_distance = cost + v[now][i].first;
+
+
+            if (dist[next_destination] > next_distance) {
+                dist[next_destination] = next_distance;
+
+
+                pq.push(make_pair(next_distance, next_destination));
             }
         }
-    }
- 
-    for (int i = 1; i <= V; i++)
-    {
-        if (Dist[i] == INF) cout << "INF" << endl;
-        else cout << Dist[i] << endl;
-    }
+	}
 }
- 
-void Solve()
-{
-    Input();
-    Solution();
-}
- 
-int main(void)
-{
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
- 
-    //freopen("Input.txt", "r", stdin);
-    Solve();
- 
-    return 0;
+
+int main() {
+	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+
+	cin >> n >> e >> start;
+
+	for (int i = 1; i <= n; i++)
+		dist[i] = INF;
+
+	int a, b, c;
+	for (int i = 0; i < e; i++) {
+		cin >> a >> b >> c;
+		v[a].push_back({ c,b });
+	}
+
+	dijkstra();
+
+	for (int i = 1; i <= n; i++) {
+		if (dist[i] == INF) cout << "INF\n";
+		else cout << dist[i] << "\n";
+	}
 }
