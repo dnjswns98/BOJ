@@ -7,9 +7,9 @@ class Solution {
         int x_num = 0;
 
         for(String s : str){
-            //일차항 처리
+            //일차항
             if(s.contains("x")){
-                if(s.length() == 1) { //x의 계수가 1인 경우
+                if(s.length() == 1) { //x
                     x_num++;
                 }
                 else { //nx
@@ -17,32 +17,29 @@ class Solution {
                     x_num += Integer.valueOf(temp);
                 }
             }
-            //연산자는 건너뜀
+            //연산자
             else if(s.equals("+")){
                 continue;
             }
-            //상수항 처리
+            //상수항
             else{
                 num += Integer.valueOf(s);
             }
         }
         
-         // 일차항이 존재하는 경우
-        if (x_num > 0) {
-            if (x_num == 1) { // 계수가 1인 경우 생략
-                answer += "x";
-            } else {
-                answer += x_num + "x";
-            }
+        if(x_num == 0){
+            answer += num;
         }
-
-        // 상수항이 존재하는 경우
-        if (num > 0) {
-            if (x_num > 0) { // 일차항과 상수항 모두 있는 경우
-                answer += " + " + num;
-            } else { // 상수항만 있는 경우
-                answer += num;
-            }
+        else if(num == 0){
+            if(x_num == 1) 
+                answer += "x";
+            else 
+                answer += x_num + "x";
+        }
+        else{
+            if(x_num == 1) 
+                answer += "x + " + num;
+            else answer += x_num + "x + " + num;
         }
         
         return answer;
