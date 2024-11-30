@@ -1,7 +1,6 @@
 import java.util.*;
 
 public class Solution {
-    static int cnt = 0;
     static int n;
     static int l;
     static int tasteMax = 0;
@@ -22,25 +21,16 @@ public class Solution {
                 taste.add(sc.nextInt());
                 cal.add(sc.nextInt());
             }
+            int[] dp = new int[l + 1];
 
-            tasteMax = 0;
-            dfs(0,0,0);
+            for(int i = 0; i<n; i++) {
+                for(int j = l; j >= cal.get(i); j--) {
+                    dp[j] = Math.max(dp[j], dp[j - cal.get(i)] + taste.get(i));
+                }
+            }
 
             System.out.print("#" + test_case + " ");
-            System.out.println(tasteMax);
+            System.out.println(dp[l]);
         }
-    }
-
-    static void dfs(int idx, int currentTaste, int currentCal) {
-        if(currentCal > l) {
-            return;
-        }
-        if(idx == n) {
-            tasteMax = Math.max(tasteMax,currentTaste);
-            return;
-        }
-
-        dfs(idx + 1, currentTaste + taste.get(idx), currentCal + cal.get(idx));
-        dfs(idx + 1, currentTaste, currentCal);
     }
 }
