@@ -14,57 +14,15 @@ public class Solution {
                 str[i] = sc.next();
             }
             
-            String[] colStr = new String[100]; //세로 저장
-            for(int i = 0; i<100; i++) {
-                String s = "";
-                for(int j = 0; j<100; j++) {
-                    s += str[j].charAt(i);
-                }
-                colStr[i] = s;
-            }
-            
             int result = 1;
-            for(int i = 0; i < 100; i++) { //가로 회문 검사
-                for(int j = 0; j < 99; j++) {
-                    for(int h = j + 1; h < 100; h++) {
-                        if((h - j) % 2 == 1) { //짝수개
-                            String s1 = str[i].substring(j, (j + h + 1) / 2);
-                            String s2 = str[i].substring((j + h + 1) / 2, h + 1);
-                            String reverse = new StringBuilder(s2).reverse().toString();
-                            if(s1.equals(reverse)) {
-                                result = Math.max(result, s1.length() * 2);
-                            }
+            for(int i = 0; i<100; i++) {
+                for(int j = 0; j<99; j++) {
+                    for(int h = j + 1; h<100; h++) {
+                        if(isRowPalindrome(str[i], j, h)) {
+                            result = Math.max(result, h - j + 1);
                         }
-                        else { //홀수개
-                            String s1 = str[i].substring(j, (j + h) / 2);
-                            String s2 = str[i].substring((j + h) / 2 + 1, h + 1);
-                            String reverse = new StringBuilder(s2).reverse().toString();
-                            if(s1.equals(reverse)) {
-                                result = Math.max(result, s1.length() * 2 + 1);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for(int i = 0; i < 100; i++) { //세로 회문 검사
-                for(int j = 0; j < 99; j++) {
-                    for(int h = j + 1; h < 100; h++) {
-                        if((h - j) % 2 == 1) { //짝수개
-                            String s1 = colStr[i].substring(j, (j + h + 1) / 2);
-                            String s2 = colStr[i].substring((j + h + 1) / 2, h + 1);
-                            String reverse = new StringBuilder(s2).reverse().toString();
-                            if(s1.equals(reverse)) {
-                                result = Math.max(result, s1.length() * 2);
-                            }
-                        }
-                        else { //홀수개
-                            String s1 = colStr[i].substring(j, (j + h) / 2);
-                            String s2 = colStr[i].substring((j + h) / 2 + 1, h + 1);
-                            String reverse = new StringBuilder(s2).reverse().toString();
-                            if(s1.equals(reverse)) {
-                                result = Math.max(result, s1.length() * 2 + 1);
-                            }
+                        if(isColPalindrome(str, i, j, h)) {
+                            result = Math.max(result, h - j + 1);
                         }
                     }
                 }
@@ -73,5 +31,27 @@ public class Solution {
             System.out.print("#" + n + " ");
             System.out.println(result);
         }
+    }
+
+    static boolean isRowPalindrome(String str, int start, int end) {
+        while(start < end) {
+            if(str.charAt(start) != str.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    static boolean isColPalindrome(String[] str, int col, int start, int end) {
+        while(start < end) {
+            if(str[start].charAt(col) != str[end].charAt(col)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
     }
 }
