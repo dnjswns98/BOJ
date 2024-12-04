@@ -11,24 +11,17 @@ public class Solution {
             int p = sc.nextInt();
             int q = sc.nextInt();
 
-            int[] loop = calculator(p);
-            int start = loop[1] - loop[0] + 1;
-            int pX = 1 + p-start;
-            int pY = loop[0] - (p - start);
+            int[] point_P = findPoint(p);
+            int[] point_Q = findPoint(q);
 
-            loop = calculator(q);
-            start = loop[1] - loop[0] + 1;
-            int qX = 1 + q-start;
-            int qY = loop[0] - (q - start);
-
-            int x = pX + qX;
-            int y = pY + qY;
+            int x = point_P[0] + point_Q[0];
+            int y = point_P[1] + point_Q[1];
 
             int sum = 0;
             for(int i = 1; i<x+y-1; i++) {
                 sum += i;
             }
-            
+
             int result = sum + x;
 
             System.out.print("#" + test_case + " ");
@@ -36,16 +29,22 @@ public class Solution {
         }
     }
 
+    static int[] findPoint(int n) {
+        int[] num = calculator(n);
+        int startNum = num[1] - num[0] + 1;
+        int addPoint = n - startNum;
+        int[] point = {1 + addPoint, num[0] - addPoint}; //x, y 좌표
+        return point;
+    }
+
     static int[] calculator(int n) {
-        int start = 0;
-        int end = 0;
-        while(end < n) {
-            start++;
-            end += start;
+        int startIdx = 0;
+        int endNum = 0;
+        while(endNum < n) {
+            startIdx++;
+            endNum += startIdx;
         }
-        int[] ans = new int[2];
-        ans[0] = start;
-        ans[1] = end;
+        int[] ans = {startIdx, endNum};
         return ans;
     }
 }
