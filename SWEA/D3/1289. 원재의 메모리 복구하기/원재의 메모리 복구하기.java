@@ -1,29 +1,25 @@
-import java.util.*;
+import java.util.Scanner;
 
-public class Solution {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int T;
-        T=sc.nextInt();
+class Solution {
+	public static void main(String args[]) throws Exception {
 
-        for(int test_case = 1; test_case <= T; test_case++) {
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++) {
             String s = sc.next();
+            char c = s.charAt(0);
             int cnt = 0;
-            boolean check = false;
-            for(int i = 0; i<s.length(); i++) {
-                char c = s.charAt(i);
-                if(c == '1' && !check) {
+            if(c == '1') cnt++;
+            for(int i = 1; i<s.length(); i++) {
+                char ch = s.charAt(i);
+                if(ch != c){
                     cnt++;
-                    check = true;
-                }
-                else if(c == '0' && check) {
-                    cnt++;
-                    check = false;
+                    c = ch;
                 }
             }
-
-            System.out.print("#" + test_case + " ");
-            System.out.println(cnt);
-        }
-    }
+            System.out.println("#" + test_case + " " + cnt);
+		}
+	}
 }
