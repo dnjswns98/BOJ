@@ -5,54 +5,48 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+	static int n, d, k, c;
+	static int[] arr;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int n = Integer.parseInt(st.nextToken());
-		int d = Integer.parseInt(st.nextToken());;
-		int k = Integer.parseInt(st.nextToken());;
-		int c = Integer.parseInt(st.nextToken());;
-		int[] arr = new int[n];
-
-		for (int i = 0; i < n; i++) {
+		n = Integer.parseInt(st.nextToken());
+		d = Integer.parseInt(st.nextToken());
+		k = Integer.parseInt(st.nextToken());
+		c = Integer.parseInt(st.nextToken());
+		
+		arr = new int[n];
+		for(int i = 0; i<n; i++) {
 			arr[i] = Integer.parseInt(br.readLine());
 		}
 		
-		int max = 1;
-		int[] cnt = new int[d+1];
-		cnt[c] = 1;
-		int end = 0;
-		while(end < k) {
-			if(cnt[arr[end]] == 0) {
-				max++;
-			}
-			cnt[arr[end++]]++;
+		int[] cnt = new int[d + 1];
+		cnt[c] = 1; // 무료쿠폰
+		int count = 1; // 초밥 종류 개수 (무료 쿠폰으로 하나 가지고 시작)
+		for(int i = 0; i<k; i++) {
+			if(cnt[arr[i]] == 0) count++;
+			cnt[arr[i]]++;
 		}
 		
-		int count = max;
+		// 슬라이딩 윈도우
+		int max = count;
 		int start = 0;
-		while(true) {
-			if(start == n) {
-				break;
-			}
-			if(end == n)
-				end = 0;
+		int end = k;
+		while(start < n) {
+			if(end == n) end = 0;
 			
-			if(cnt[arr[start]] == 1) {
-				count--;
-			}
+			if(cnt[arr[start]] == 1) count--;
 			cnt[arr[start]]--;
 			
-			if(cnt[arr[end]] == 0) {
-				count++;
-			}
+			if(cnt[arr[end]] == 0) count++;
 			cnt[arr[end]]++;
 			
 			max = Math.max(max, count);
+			
 			start++;
 			end++;
 		}
-		
 		
 		System.out.println(max);
 	}
