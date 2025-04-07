@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 class Solution {
 
 	static int min;
-	static int[] cost, month;
+	static int[] cost, dp;
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,33 +21,18 @@ class Solution {
 			}
 
 			st = new StringTokenizer(br.readLine());
-			month = new int[12];
-			for (int i = 0; i < 12; i++) {
-				month[i] = Integer.parseInt(st.nextToken()); // 이용 계획
+			dp = new int[13]; // i월까지 이용했을 경우의 최소 비용
+			for (int i = 1; i <= 12; i++) {
+				int cnt = Integer.parseInt(st.nextToken()); // 이용 계획
+				dp[i] = Math.min(dp[i - 1] + cnt * cost[0], dp[i - 1] + cost[1]); // 하루 이용권, 한 달 이용권 비교
+				
+				if(i >= 3) {
+					dp[i] = Math.min(dp[i - 3] + cost[2], dp[i]); // 3달 이용권
+				}
 			}
 
-			min = cost[3]; // 1년 이용권
-			dfs(0, 0);
-
-			sb.append("#").append(t).append(" ").append(min).append("\n");
+			sb.append("#").append(t).append(" ").append(Math.min(dp[12], cost[3])).append("\n");
 		}
 		System.out.println(sb);
-	}
-
-	static void dfs(int cnt, int sum) {
-		if (sum >= min)
-			return; // 이미 최소값보다 커졌다면
-
-		if (cnt >= 12) {
-			min = sum;
-			return;
-		}
-
-		if (month[cnt] > 0) { // 해당 월에 사람이 있다면
-			dfs(cnt + 1, sum + cost[0] * month[cnt]); // 1일 이용권
-			dfs(cnt + 1, sum + cost[1]); // 1달 이용권
-			dfs(cnt + 3, sum + cost[2]); // 3달 이용권
-		}
-		else dfs(cnt + 1, sum);
 	}
 }
