@@ -5,13 +5,13 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+	static int n;
 	static int[][] arr;
-	static int n, result;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
 
 		arr = new int[n][n];
 		for (int i = 0; i < n; i++) {
@@ -21,46 +21,33 @@ public class Main {
 			}
 		}
 
-		dfs(0, 1, 0);
-
-		System.out.println(result);
-	}
-
-	static void dfs(int x, int y, int direction) {
-		if (x == n - 1 && y == n - 1) {
-			result++;
-			return;
+		// 0 : 가로, 1 : 세로, 2 : 대각선
+		int[][][] dp = new int[n][n][3];
+		for(int i = 1; i<n; i++) {
+			if(arr[0][i] == 1) break;
+			dp[0][i][0] = 1; // 초기값 : 파이프의 오른쪽 끝이면서 방향은 가로
 		}
 
-		// 가로
-		if (direction == 0) {
-			// 우측 이동
-			if (y + 1 < n && arr[x][y + 1] == 0) {
-				dfs(x, y + 1, 0);
-			}
-		}
-		// 세로
-		else if (direction == 1) {
-			// 하
-			if (x + 1 < n && arr[x + 1][y] == 0) {
-				dfs(x + 1, y, 1);
-			}
-		}
-		// 대각선
-		else if (direction == 2) {
-			// 우측 이동
-			if (y + 1 < n && arr[x][y + 1] == 0) {
-				dfs(x, y + 1, 0);
-			}
-			// 하
-			if (x + 1 < n && arr[x + 1][y] == 0) {
-				dfs(x + 1, y, 1);
+		// 파이프는 우/우하/하 로만 이동이 가능하므로 2열~n열까지만 움직임
+		for (int i = 1; i < n; i++) {
+			for (int j = 2; j < n; j++) {
+				if(arr[i][j] == 1) continue;
+				
+				// 가로 : 이전이 가로 or 이전이 대각선
+				dp[i][j][0] = dp[i][j - 1][0] + dp[i][j - 1][2];
+				
+				// 세로 : 이전이 세로 or 이전이 대각선
+				dp[i][j][1] = dp[i - 1][j][1] + dp[i - 1][j][2];
+						
+				// 대각선 : 세 칸이 모두 비어 있어야 가능
+				// 모든 방향에서 갈 수 있음
+				if(arr[i - 1][j] == 0 && arr[i][j - 1] == 0) {
+					dp[i][j][2] = dp[i - 1][j - 1][0] + dp[i - 1][j - 1][1]  + dp[i - 1][j - 1][2];
+				}
 			}
 		}
 
-		// 우측 하단은 어떤 방향이던지 갈 수 있음
-		if (x + 1 < n && y + 1 < n && arr[x + 1][y + 1] == 0 && arr[x + 1][y] == 0 && arr[x][y + 1] == 0) {
-			dfs(x + 1, y + 1, 2);
-		}
+		
+		System.out.println(dp[n - 1][n - 1][0] + dp[n - 1][n - 1][1] + dp[n - 1][n - 1][2]);
 	}
 }
