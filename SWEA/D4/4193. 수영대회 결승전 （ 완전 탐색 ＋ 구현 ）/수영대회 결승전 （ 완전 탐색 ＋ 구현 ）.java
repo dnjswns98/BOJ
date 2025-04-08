@@ -1,89 +1,98 @@
-import java.util.*;
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 class Solution {
-	static class node {
+
+	static int n, a, b, c, d;
+	static int[][] arr;
+
+	static class Point implements Comparable<Point> {
 		int x;
 		int y;
-		int time;
-		public node(int x, int y, int time) {
+		int cnt;
+
+		public Point(int x, int y, int cnt) {
 			this.x = x;
 			this.y = y;
-			this.time = time;
+			this.cnt = cnt;
+		}
+
+		@Override
+		public int compareTo(Point o) {
+			return Integer.compare(this.cnt, o.cnt);
 		}
 	}
-	
-	static int n;
-	static int[][] arr;
-	static int a,b,c,d;
-	static boolean[][] visited;
-	static int[] dx = {1,0,-1,0};
-	static int[] dy = {0,1,0,-1};
-	static int result = -1;
-	
-	public static void main(String args[]) throws Exception {
-		Scanner sc = new Scanner(System.in);
-		int T;
-		T=sc.nextInt();
-		
-		for(int test_case = 1; test_case <= T; test_case++) {
-			n = sc.nextInt();
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+		int test = Integer.parseInt(br.readLine());
+
+		for (int t = 1; t <= test; t++) {
+			n = Integer.parseInt(br.readLine());
+
 			arr = new int[n][n];
-			visited = new boolean[n][n];
-			for(int i = 0; i<n; i++) {
-				for(int j = 0; j<n; j++) {
-					arr[i][j] = sc.nextInt();
+			for (int i = 0; i < n; i++) {
+				st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < n; j++) {
+					arr[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
-			a = sc.nextInt();
-			b = sc.nextInt();
-			c = sc.nextInt();
-			d = sc.nextInt();
-			
-			result = -1;
-			bfs(a, b);
-			
-			System.out.println("#" + test_case + " " + result);
-		}
-	}
-	
-	static void bfs(int x, int y) {
-		Queue<node> q = new LinkedList<>();
-		q.add(new node(x,y,0));
-		visited[x][y] = true;
-		
-		while(!q.isEmpty()) {
-			node p = q.poll();
-			
-			for(int i = 0; i<4; i++) {
-				int nx = p.x + dx[i];
-				int ny = p.y + dy[i];
-				int time = p.time;
-				
-				if(nx == c && ny == d) {
-					result = time + 1;
-					return;
+
+			st = new StringTokenizer(br.readLine());
+			a = Integer.parseInt(st.nextToken());
+			b = Integer.parseInt(st.nextToken());
+
+			st = new StringTokenizer(br.readLine());
+			c = Integer.parseInt(st.nextToken());
+			d = Integer.parseInt(st.nextToken());
+
+			int[] dx = { -1, 1, 0, 0 };
+			int[] dy = { 0, 0, -1, 1 };
+			PriorityQueue<Point> pq = new PriorityQueue<>();
+			pq.add(new Point(a, b, 0));
+			int result = -1;
+			boolean[][] visited = new boolean[n][n];
+			visited[a][b] = true;
+			while (!pq.isEmpty()) {
+				Point p = pq.poll();
+
+				if (p.x == c && p.y == d) {
+					result = p.cnt;
+					break;
 				}
-				
-				if(nx < 0 || ny < 0 || nx >= n || ny >= n || arr[nx][ny] == 1 || visited[nx][ny])
-					continue;
-				
-				if(arr[nx][ny] == 0) { //빈 공간
-					visited[nx][ny] = true;
-					q.add(new node(nx,ny,time + 1));
-				}
-				else if(arr[nx][ny] == 2) { //소용돌이
-					if(time % 3 == 0) {
-						q.add(new node(p.x, p.y, time + 1));
-					}
-					else if(time % 3 == 1) {
-						q.add(new node(p.x, p.y, time + 1));
-					}
-					else if(time % 3 == 2) {
+
+				for (int i = 0; i < 4; i++) {
+					int nx = p.x + dx[i];
+					int ny = p.y + dy[i];
+
+					if (nx < 0 || nx >= n || ny < 0 || ny >= n)
+						continue;
+					if (visited[nx][ny] || arr[nx][ny] == 1)
+						continue;
+
+					if (arr[nx][ny] == 2) {
+						if (p.cnt % 3 == 2) {
+							pq.add(new Point(nx, ny, p.cnt + 1));
+							visited[nx][ny] = true;
+						} else {
+							pq.add(new Point(p.x, p.y, p.cnt + 1));
+						}
+					} else {
 						visited[nx][ny] = true;
-						q.add(new node(nx,ny,time + 1));
+						pq.offer(new Point(nx, ny, p.cnt + 1));
 					}
 				}
 			}
+
+			sb.append("#").append(t).append(" ").append(result).append("\n");
 		}
+		System.out.println(sb);
 	}
 }
