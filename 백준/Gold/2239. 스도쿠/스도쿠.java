@@ -6,6 +6,7 @@ public class Main {
 
 	static int[][] arr;
 	static boolean isFind;
+	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,6 +21,8 @@ public class Main {
 
 		isFind = false;
 		dfs(0, 0);
+		
+		System.out.println(sb);
 	}
 
 	static void dfs(int x, int y) {
@@ -32,12 +35,12 @@ public class Main {
 
 		if (x == 9) { // 모두 채워짐
 			isFind = true;
-			
+
 			for(int i = 0; i<9; i++) {
 				for(int j = 0; j<9; j++) {
-					System.out.print(arr[i][j]);
+					sb.append(arr[i][j]);
 				}
-				System.out.println();
+				sb.append('\n');
 			}
 			return;
 		}
