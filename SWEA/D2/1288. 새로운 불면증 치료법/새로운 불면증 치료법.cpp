@@ -1,30 +1,34 @@
-#include <iostream>
-#include <string>
-#include <set>
-using namespace std;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-int main(void) {
-	int test_case;
-	int T;
-	cin >> T;
+class Solution {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+		int t = Integer.parseInt(br.readLine());
 
-	for (test_case = 1; test_case <= T; ++test_case)
-	{
-		int n;
-		cin >> n;
-		set<char> s;
-		int cnt = 1;
-		int temp = n;
-		while (1) {
-			string str = to_string(n);
-			for (int i = 0; i < str.size(); i++) {
-				s.insert(str[i]);
+		for (int test = 1; test <= t; test++) {
+			int n = Integer.parseInt(br.readLine());
+
+			int total = (1 << 10) - 1;
+			int visited = 0;
+
+			int cnt = 1;
+			while (true) {
+				int num = n * cnt;
+				while (num != 0) { // 각 자리수 뽑기
+					int k = num % 10;
+					visited |= (1 << k); // 해당 자리수가 등장
+					num /= 10;
+				}
+				if(visited == total) break;
+				cnt++;
 			}
-			if (s.size() == 10) break;
-			cnt++;
-			n = temp * cnt;
-		}
 
-		cout << "#" << test_case << " " << n << "\n";
+			sb.append("#").append(test).append(" " + n * cnt + "\n");
+		}
+		System.out.println(sb);
 	}
 }
