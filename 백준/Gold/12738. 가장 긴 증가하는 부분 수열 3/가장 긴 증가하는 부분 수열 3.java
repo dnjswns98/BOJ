@@ -1,41 +1,33 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Main{
-	static int[] memo;
-	public static void main(String[] args) throws IOException{
+public class Main {
+
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
 		int n = Integer.parseInt(br.readLine());
-		
 		int[] arr = new int[n];
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		for(int i=0; i<n; i++) {
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
+
+		int[] c = new int[n];
+		int size = 0;
+		for(int i = 0; i<n; i++) {
+			int pos = Arrays.binarySearch(c, 0, size, arr[i]);
+			
+			if(pos < 0) pos = -(pos + 1);
+			
+			c[pos] = arr[i];
+			if(pos == size) size++;
+		}
 		
-		memo = new int[n+1];
-		memo[0] = -1_000_000_001;
-		int len=0, idx=0;
-		for(int i=0; i<n; i++) {
-			if(arr[i] > memo[len]) {
-				memo[++len] = arr[i];
-			}else {
-				idx = binarySearch(0, len, arr[i]);
-				memo[idx] = arr[i];
-			}
-		}
-		System.out.println(len);
-	}
-	static int binarySearch(int left, int right, int key) {
-		int mid =0;
-		while(left<right) {
-			mid = (left+right)/2;
-			if(memo[mid] < key) {
-				left = mid+1;
-			}else {
-				right = mid;
-			}
-		}
-		return right;
+		System.out.println(size);
 	}
 }
