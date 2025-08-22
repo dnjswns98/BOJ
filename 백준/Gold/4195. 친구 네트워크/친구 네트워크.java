@@ -12,6 +12,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
 
 		int t = Integer.parseInt(br.readLine());
 		for (int test = 0; test < t; test++) {
@@ -19,7 +20,7 @@ public class Main {
 
 			parents = new HashMap<>();
 			size = new HashMap<>();
-
+			
 			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
 				String a = st.nextToken();
@@ -33,10 +34,10 @@ public class Main {
 					parents.put(b, b);
 					size.put(b, 1);
 				}
-
-				union(a, b);
+				sb.append(union(a, b)).append('\n');
 			}
 		}
+		System.out.println(sb);
 	}
 
 	static String find(String x) {
@@ -46,7 +47,7 @@ public class Main {
 		return parents.get(x);
 	}
 
-	static void union(String a, String b) {
+	static int union(String a, String b) {
 		String aRoot = find(a);
 		String bRoot = find(b);
 
@@ -58,6 +59,6 @@ public class Main {
 			size.put(aRoot, aSize + bSize);
 		}
 		
-		System.out.println(size.get(aRoot));
+		return size.get(aRoot);
 	}
 }
