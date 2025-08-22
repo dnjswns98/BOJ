@@ -1,91 +1,91 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static int[] parent, size;
 
-	static int[] parents;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int n = Integer.parseInt(st.nextToken());
-		int m = Integer.parseInt(st.nextToken());
+        parent = new int[n + 1];
+        size = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
 
-		parents = new int[n + 1];
-		for (int i = 1; i <= n; i++) {
-			parents[i] = i;
-		}
-		
-		st = new StringTokenizer(br.readLine());
-		int tCnt = Integer.parseInt(st.nextToken());
-		if(tCnt == 0) {
-			System.out.println(m);
-			return;
-		}
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < tCnt; i++) {
-			int x = Integer.parseInt(st.nextToken());
-			set.add(x);
-		}
+        // 진실 아는 사람 입력
+        st = new StringTokenizer(br.readLine());
+        int tCnt = Integer.parseInt(st.nextToken());
+        if (tCnt == 0) { // 진실 아는 사람이 없으면 모든 파티 가능
+            System.out.println(m);
+            return;
+        }
+        int[] truthPeople = new int[tCnt];
+        for (int i = 0; i < tCnt; i++) {
+            truthPeople[i] = Integer.parseInt(st.nextToken());
+        }
 
-		ArrayList<Integer>[] party = new ArrayList[m];
-		for(int i = 0; i<m; i++) {
-			party[i] = new ArrayList<Integer>();
-		}
-		
-		for (int i = 0; i < m; i++) {
-			st = new StringTokenizer(br.readLine());
-			int pCnt = Integer.parseInt(st.nextToken());
-			
-			int a = Integer.parseInt(st.nextToken());
-			party[i].add(a);
-			for (int j = 1; j < pCnt; j++) {
-				int b = Integer.parseInt(st.nextToken());
-				party[i].add(b);
-				union(a, b);
-			}
-		}
-		
-		HashSet<Integer> truth = new HashSet<Integer>();
-		for(int p : set) {
-			truth.add(find(p));
-		}
+        // 파티 정보 저장
+        List<List<Integer>> parties = new ArrayList<>();
+        for (int i = 0; i < m; i++) parties.add(new ArrayList<>());
 
-		int cnt = 0;
-		for(int i = 0; i<m; i++) {
-			boolean check = false;
-			for(int a : party[i]) {
-				if(truth.contains(find(a))) {
-					check = true;
-					break;
-				}
-			}
-			
-			if(!check) {
-				cnt++;
-			}
-		}
-		
-		System.out.println(cnt);
-	}
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int pCnt = Integer.parseInt(st.nextToken());
 
-	static int find(int x) {
-		if (x == parents[x])
-			return x;
-		return parents[x] = find(parents[x]);
-	}
+            int first = Integer.parseInt(st.nextToken());
+            parties.get(i).add(first);
 
-	static void union(int a, int b) {
-		int aRoot = find(a);
-		int bRoot = find(b);
+            for (int j = 1; j < pCnt; j++) {
+                int b = Integer.parseInt(st.nextToken());
+                parties.get(i).add(b);
+                union(first, b); // 같은 파티 사람이면 무조건 같은 집합
+            }
+        }
 
-		if (aRoot == bRoot)	return;
+        // 진실 아는 사람들의 루트 집합 구하기
+        Set<Integer> truthRoots = new HashSet<>();
+        for (int t : truthPeople) {
+            truthRoots.add(find(t));
+        }
 
-		parents[bRoot] = aRoot;
-	}
+        // 각 파티 검사
+        int cnt = 0;
+        for (List<Integer> party : parties) {
+            boolean hasTruth = false;
+            for (int person : party) {
+                if (truthRoots.contains(find(person))) {
+                    hasTruth = true;
+                    break;
+                }
+            }
+            if (!hasTruth) cnt++;
+        }
+
+        System.out.println(cnt);
+    }
+
+    static int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+
+    static void union(int a, int b) {
+        int ra = find(a);
+        int rb = find(b);
+        if (ra == rb) return;
+
+        // 작은 집합을 큰 집합 밑에 붙이기 (union by size)
+        if (size[ra] < size[rb]) {
+            parent[ra] = rb;
+            size[rb] += size[ra];
+        } else {
+            parent[rb] = ra;
+            size[ra] += size[rb];
+        }
+    }
 }
