@@ -2,35 +2,45 @@ import java.util.*;
 
 class Solution {
     
-    boolean[] visited;
+    int[] parents;
+    HashSet<Integer> set = new HashSet<>();
     
-    public int solution(int n, int[][] computers) {
-        int answer = 0;
-        
-        visited = new boolean[n];
-        for(int i = 0; i<n; i++){
-            if(!visited[i]) {
-                answer++;
-                bfs(i, n, computers);
-            }
-        }
-        
-        return answer;
+    public int find(int a) {
+        if(parents[a] == a) return a;
+        return parents[a] = find(parents[a]);
     }
     
-    public void bfs(int v, int size, int[][] map) {
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(v);
+    public boolean union(int a, int b) {
+        int aRoot = find(a);
+        int bRoot = find(b);
         
-        while(!q.isEmpty()) {
-            int cur = q.poll();
-            visited[cur] = true;
-            
-            for(int i = 0; i<size; i++){
-                if(map[cur][i] == 1 && !visited[i]){
-                    q.offer(i);
+        if(aRoot == bRoot) return false;
+        
+        parents[bRoot] = aRoot;
+        return true;
+    }
+    
+    public int solution(int n, int[][] computers) {
+        
+        parents = new int[n];
+        for(int i = 0; i<n; i++){
+            parents[i] = i;
+        }
+        
+        for(int i = 0; i<n; i++) {
+            for(int j = 0; j<n; j++) {
+                if(i==j) continue;
+                
+                if(computers[i][j] == 1){
+                    union(i, j);
                 }
             }
         }
+        
+        for(int i = 0; i<n; i++) {
+            set.add(find(i));
+        }
+        
+        return set.size();
     }
 }
